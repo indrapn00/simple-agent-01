@@ -4,7 +4,18 @@ A beginner-friendly AI Agent built with the **Google Agent Development Kit (ADK)
 
 ---
 
-## 1. Zero-Coding Anatomy of an Agent
+## 1. Live Deployed Endpoints (`gcp-demo-02-307713`)
+
+| Runtime Target | Region | Live Endpoint / Playground URL | Agent Registry Resource Name |
+| :--- | :--- | :--- | :--- |
+| **Cloud Run (Web UI + API + A2A)** | `asia-southeast2` | `https://simple-agent-01-66063681189.asia-southeast2.run.app` | `projects/gcp-demo-02-307713/locations/asia-southeast2/services/simple-agent-01-cloudrun` |
+| **Cloud Run (Web UI + API + A2A)** | `us-central1` | `https://simple-agent-01-66063681189.us-central1.run.app` | `projects/gcp-demo-02-307713/locations/us-central1/agents/agentregistry-00000000-0000-0000-1459-bfd23a25490d` |
+| **Vertex AI Agent Engine** | `asia-southeast2` | [Console Playground (`7211353718954917888`)](https://console.cloud.google.com/vertex-ai/agents/agent-engines/locations/asia-southeast2/agent-engines/7211353718954917888/playground?project=66063681189) | `projects/gcp-demo-02-307713/locations/asia-southeast2/agents/agentregistry-00000000-0000-0000-ba83-6207b1257716` |
+| **Vertex AI Agent Engine** | `us-central1` | [Console Playground (`9059214401072005120`)](https://console.cloud.google.com/vertex-ai/agents/agent-engines/locations/us-central1/agent-engines/9059214401072005120/playground?project=66063681189) | `projects/gcp-demo-02-307713/locations/us-central1/agents/agentregistry-00000000-0000-0000-b23e-d0756d17eda0` |
+
+---
+
+## 2. Zero-Coding Anatomy of an Agent
 
 An ADK Agent requires only **3 files** inside the [`network_agent/`](./network_agent/) folder:
 
@@ -20,7 +31,7 @@ An ADK Agent requires only **3 files** inside the [`network_agent/`](./network_a
 
 ---
 
-## 2. Deploying the Agent (Cloud Run vs. Vertex AI Agent Engine)
+## 3. Deploying the Agent (Cloud Run vs. Vertex AI Agent Engine)
 
 ### Option A: Deploy to Cloud Run (with Web UI + A2A Protocol)
 Deploys the agent as a serverless container with both an interactive **ADK Web UI** and an **Agent-to-Agent (`--a2a`)** endpoint:
@@ -33,10 +44,15 @@ adk deploy cloud_run \
   --a2a \
   ./network_agent \
   -- --allow-unauthenticated
+
+gcloud run services update simple-agent-01 \
+  --region=asia-southeast2 \
+  --project=gcp-demo-02-307713 \
+  --update-env-vars="GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=gcp-demo-02-307713,GOOGLE_CLOUD_LOCATION=us-central1"
 ```
 
 ### Option B: Deploy to Vertex AI Agent Engine
-Deploys the agent into Google Cloud's managed **Vertex AI Agent Platform** runtime (`ReasoningEngine`):
+Deploys the agent into Google Cloud's managed **Vertex AI Agent Platform** runtime (`ReasoningEngine`), which **auto-registers** into `agentregistry.googleapis.com`:
 ```bash
 adk deploy agent_engine \
   --project=gcp-demo-02-307713 \
@@ -48,7 +64,7 @@ adk deploy agent_engine \
 
 ---
 
-## 3. How Agent Platform, Agent Registry, and Agent Gateway Fit Together (Networking View)
+## 4. How Agent Platform, Agent Registry, and Agent Gateway Fit Together (Networking View)
 
 ```mermaid
 flowchart LR
@@ -63,10 +79,10 @@ flowchart LR
 
 1. **List Agents & MCP Servers in Agent Registry:**
    ```bash
+   gcloud alpha agent-registry agents list --location=asia-southeast2 --project=gcp-demo-02-307713
    gcloud alpha agent-registry agents list --location=us-central1 --project=gcp-demo-02-307713
-   gcloud alpha agent-registry mcp-servers list --location=us-central1 --project=gcp-demo-02-307713
    ```
-2. **Inspect Your Existing Network Services Agent Gateway:**
+2. **Inspect Your Existing Network Services Agent Gateway (`us-central1`):**
    ```bash
    gcloud network-services agent-gateways list --location=us-central1 --project=gcp-demo-02-307713
    gcloud network-services agent-gateways describe agent-gateway --location=us-central1 --project=gcp-demo-02-307713
