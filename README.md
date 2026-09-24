@@ -46,7 +46,7 @@ adk deploy cloud_run \
 gcloud run services update simple-agent-01 \
   --region=asia-southeast2 \
   --project=gcp-demo-02-307713 \
-  --update-env-vars="GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=gcp-demo-02-307713,GOOGLE_CLOUD_LOCATION=us-central1"
+  --update-env-vars="GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=gcp-demo-02-307713,GOOGLE_CLOUD_LOCATION=global"
 ```
 
 ### Option B: Deploy to Vertex AI Agent Engine
