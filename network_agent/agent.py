@@ -1,5 +1,11 @@
 import ipaddress
+import os
 from google.adk.agents.llm_agent import Agent
+
+# Ensure Gemini model calls inside Cloud Run or Vertex AI Agent Engine (asia-southeast2)
+# route to Vertex AI's global endpoint in Argolis projects:
+os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "TRUE"
+os.environ["GOOGLE_CLOUD_LOCATION"] = "global"
 
 
 # ============================================================================
